@@ -28,23 +28,30 @@ document.addEventListener("DOMContentLoaded", () => {
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
           <div class="participants-section">
             <h5>Participants</h5>
-            <ul>
-              ${details.participants
-                .map(
-                  (participant) => `
-                    <li>
-                      <span>${participant}</span>
-                      <button class="remove-participant" type="button" data-activity="${name}" data-email="${participant}" aria-label="Remove ${participant}" title="Remove participant">&times;</button>
-                    </li>`
-                )
-                .join("")}
-            </ul>
           </div>
         `;
 
-        activityCard.querySelectorAll(".remove-participant").forEach((button) => {
-          button.addEventListener("click", () => unregisterParticipant(button));
+        const participantsList = document.createElement("ul");
+        details.participants.forEach((participant) => {
+          const participantItem = document.createElement("li");
+          const participantName = document.createElement("span");
+          participantName.textContent = participant;
+
+          const removeButton = document.createElement("button");
+          removeButton.className = "remove-participant";
+          removeButton.type = "button";
+          removeButton.dataset.activity = name;
+          removeButton.dataset.email = participant;
+          removeButton.setAttribute("aria-label", `Remove ${participant}`);
+          removeButton.title = "Remove participant";
+          removeButton.textContent = "\u00d7";
+          removeButton.addEventListener("click", () => unregisterParticipant(removeButton));
+
+          participantItem.append(participantName, removeButton);
+          participantsList.appendChild(participantItem);
         });
+
+        activityCard.querySelector(".participants-section").appendChild(participantsList);
 
         activitiesList.appendChild(activityCard);
 
